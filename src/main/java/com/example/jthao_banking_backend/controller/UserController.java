@@ -1,15 +1,26 @@
 package com.example.jthao_banking_backend.controller;
 
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.jthao_banking_backend.model.UpdateUserRequest;
+import com.example.jthao_banking_backend.model.User;
 import com.example.jthao_banking_backend.service.UserService;
 
+import org.springframework.web.bind.annotation.RequestBody;
+// import jakarta.persistence.EntityNotFoundException;
+
 @RestController 
-@RequestMapping("/user")
+@RequestMapping("/customers")
 public class UserController {
     private final UserService userService;
 
@@ -18,19 +29,44 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<?> getAllUsers() {
+    public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userService.findAll());
     }
 
     @PostMapping("/create-user")
     public ResponseEntity<?> createUser(String fName, String lName, String email, String phoneNumber) {
+        try {
         return ResponseEntity.ok(userService.createUser(fName, lName, email, phoneNumber));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
     }
 
     // find by id
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findById(@PathVariable Long id) {
+        try {
+        return ResponseEntity.ok(userService.findById(id));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
+    }
 
     // update contact info
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody  UpdateUserRequest request) {
+        try {
+            System.out.println("UpdateUserRequest: " + request);
+            System.out.println("===================");
+            return ResponseEntity.ok(userService.updateUserDetails(id, request));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
+    }
 
     // delete customer if account balance = 0
-    
+    //@DeleteMapping("/{id}")
+    //public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        //
+    //}
 }
