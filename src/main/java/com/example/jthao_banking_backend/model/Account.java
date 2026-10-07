@@ -1,7 +1,9 @@
 package com.example.jthao_banking_backend.model;
 
 import java.math.BigDecimal;
+import java.util.concurrent.ThreadLocalRandom;
 
+import com.example.jthao_banking_backend.types.AccountStatus;
 import com.example.jthao_banking_backend.types.AccountType;
 
 import jakarta.persistence.Column;
@@ -23,20 +25,21 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "account_number")
+    @Column(name = "account_number", unique = true, nullable = false)
     private String accountNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "account_type")
     private AccountType accountType;
 
+    @Enumerated(EnumType.STRING)
      @Column(name = "account_status")
-    private String status;
+    private AccountStatus status;
 
-     @Column(name = "initial_deposit")
+    @Column(name = "initial_deposit")
     private BigDecimal initialDeposit;
 
-     @Column(name = "account_balance")
+    @Column(name = "account_balance")
     private BigDecimal accountBalance;
 
     @ManyToOne(optional = false)
@@ -45,13 +48,16 @@ public class Account {
 
     protected Account() {}
 
-    protected Account(AccountType accountType, String status, BigDecimal deposit, User user) {
+    public Account(AccountType accountType, BigDecimal deposit, String accountNumber, User user) {
         // add validation here
 
         this.accountType = accountType;
-        this.status = status;
+        this.status = AccountStatus.OPEN;
         this.initialDeposit = deposit;
         this.user = user;
+        this.accountBalance = deposit;
+        this.accountNumber = accountNumber;
+
     }
 
     public Long getId() {
@@ -66,7 +72,7 @@ public class Account {
         return this.accountType;
     }
 
-    public String getStatus() {
+    public AccountStatus getStatus() {
         return this.status;
     }
 
@@ -86,7 +92,7 @@ public class Account {
         this.accountNumber = newAccountNum;
     }
 
-    public void setAccountStatus(String newStatus) {
+    public void setAccountStatus(AccountStatus newStatus) {
         this.status = newStatus;
     }
 
