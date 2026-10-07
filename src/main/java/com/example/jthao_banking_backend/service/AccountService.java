@@ -1,9 +1,7 @@
 package com.example.jthao_banking_backend.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.stereotype.Service;
@@ -13,6 +11,7 @@ import com.example.jthao_banking_backend.model.Account;
 import com.example.jthao_banking_backend.model.User;
 import com.example.jthao_banking_backend.repository.AccountRespository;
 import com.example.jthao_banking_backend.repository.UserRepository;
+import com.example.jthao_banking_backend.types.AccountStatus;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -65,14 +64,16 @@ public class AccountService {
     // Update account status
 
     // Delete - close account
-    public void deleteAccount(Long id) {
-        Account account = findById(id);
+    public Account closeAccount(String accountNumber) {
+        Account account = findByAccountNumber(accountNumber);
         // check if balance is 0, if true => delete
-        if (account.getAccountBalance().equals(0)) {
-            accountRespository.delete(account);
+        if (account.getAccountBalance().compareTo(BigDecimal.ZERO) == 0) {
+            account.setAccountStatus(AccountStatus.CLOSED);
+            accountRespository.saveAndFlush(account);
         } else {
-            throw new IllegalStateException("Account cannot be delete if balance is not $0.");
+            throw new IllegalStateException("Account cannot be closed if balance is not $0.");
         }
+        return account;
     }
 
     // Get list of transactions for account

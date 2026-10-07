@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,24 +39,16 @@ public class AccountController {
         
     }
 
-    // Find all accounts for a customer
-    // ** TODO: Refactor to User
-    @GetMapping("/{id}/all")
-    public ResponseEntity<?> getAllAccountsForCustomer(@PathVariable Long id) {
-        return ResponseEntity.ok(accountService.findAllAccounts());
-    }
-
     // Update account status
 
     // Delete/close account if balance = 0
-    @DeleteMapping("/")
-    public ResponseEntity<?> deleteAccount(Long id) {
+    @PatchMapping("/{accountNumber}")
+    public ResponseEntity<?> deactivateAccount(@PathVariable String accountNumber) {
         try {
-            accountService.deleteAccount(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(accountService.closeAccount(accountNumber));
         } catch (EntityNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-        } catch (IllegalArgumentException exception) {
+        } catch (IllegalStateException exception) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
         }
     }

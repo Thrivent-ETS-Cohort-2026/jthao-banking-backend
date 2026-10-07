@@ -43,7 +43,7 @@ public class Account {
     private BigDecimal accountBalance;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
     protected Account() {}
@@ -94,6 +94,10 @@ public class Account {
 
     public void setAccountStatus(AccountStatus newStatus) {
         this.status = newStatus;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     // deposit

@@ -1,5 +1,6 @@
 package com.example.jthao_banking_backend.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,8 +9,10 @@ import org.springframework.stereotype.Service;
 import com.example.jthao_banking_backend.dto.request.UpdateUserRequest;
 import com.example.jthao_banking_backend.model.Account;
 import com.example.jthao_banking_backend.model.User;
+import com.example.jthao_banking_backend.dto.response.UserIdResponse;
 import com.example.jthao_banking_backend.repository.AccountRespository;
 import com.example.jthao_banking_backend.repository.UserRepository;
+import com.example.jthao_banking_backend.types.AccountStatus;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -34,8 +37,22 @@ public class UserService {
         }
 
     public User findById(Long id) {
-        return userRepository.findById(id)
+        User user = userRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+        return user;
+    }
+
+    public UserIdResponse getAllAccountsForUser(User user) {
+        ArrayList<Account> accountList = new ArrayList<>(accountRespository.findByUserId(user.getId()));
+
+        UserIdResponse response = new UserIdResponse();
+        response.setFirstName(user.getFirstName());
+        response.setLastName(user.getLastName());
+        response.setEmail(user.getEmail());
+        response.setPhoneNumber(user.getPhoneNumber());
+        response.setAccounts(accountList);
+
+        return response;
     }
 
     public User updateUserDetails(Long id, UpdateUserRequest request) {
@@ -59,19 +76,19 @@ public class UserService {
 
     public void deleteCustomerDetails(Long id) {
         User user = findById(id);
+
         // use id to find accounts and check balance
         ArrayList<Account> accountList = new ArrayList<>(accountRespository.findByUserId(id));
-        System.out.println("=================");
-        System.out.println(accountList);
-        System.out.println("=================");
-        // Getting a 500 error
+        for (Account account : accountList) {
+            if (account.getStatus().equals(AccountStatus.SUSPENDED) || account.getStatus().equals(AccountStatus.OPEN)) {
+                throw new IllegalStateException("Customer conna be deleted while an account is still active.");
+            } else {
+                account.setUser(null);
+                accountRespository.saveAndFlush(account);
+            }
+        }
 
-
-        // Need to check if their account balance is $0.
-        // if it is, then you can delete.
-        // otherwise, don't delete.
-        // check for both Checking and Savings accounts, or all accounts
-        userRepository.delete(user);
+        userRepository.deleteById(id);
     }
 
 
