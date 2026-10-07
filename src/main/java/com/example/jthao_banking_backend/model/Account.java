@@ -102,8 +102,19 @@ public class Account {
     }
 
     // deposit
+    public void deposit(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Deposit amount must be greater than zero");
+        }
+        this.accountBalance = this.accountBalance.add(amount);
+    }
 
     // withdrawal
-   
+    public void withdraw(BigDecimal amount) {
+        if (amount.compareTo(this.accountBalance) > 0) {
+            throw new IllegalArgumentException("Insufficient balance for withdrawal");
+        }
+        this.accountBalance = this.accountBalance.subtract(amount);
+    }
 
 }

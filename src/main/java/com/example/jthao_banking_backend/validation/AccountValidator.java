@@ -1,7 +1,6 @@
 package com.example.jthao_banking_backend.validation;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 
 import com.example.jthao_banking_backend.types.AccountType;
 import com.example.jthao_banking_backend.types.AccountStatus;
