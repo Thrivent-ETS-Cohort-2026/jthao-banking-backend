@@ -89,10 +89,7 @@ public class AccountService {
         return account;
     }
 
-    
-    // Post deposit or withdrawal
 
-    // Post transfer funds between 2 accounts
 
 
     // Get list of transactions for account

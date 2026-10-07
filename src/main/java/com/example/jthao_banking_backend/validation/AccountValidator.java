@@ -12,7 +12,6 @@ public class AccountValidator {
 
         isValidAccountType(accountType);
         validateDeposit(deposit);
-
     }
 
     public static void validateDeposit(BigDecimal deposit) {

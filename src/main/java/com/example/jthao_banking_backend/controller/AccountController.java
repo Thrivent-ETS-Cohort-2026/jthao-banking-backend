@@ -66,6 +66,14 @@ public class AccountController {
     }
 
     // Get account by accountNumber
+    @GetMapping("/{accountNumber}")
+    public ResponseEntity<?> getAccountByAccountNumber(@PathVariable String accountNumber) {
+        try {
+            return ResponseEntity.ok(accountService.findByAccountNumber(accountNumber));
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
+    }
 
     // Update account and withdraw money
 
