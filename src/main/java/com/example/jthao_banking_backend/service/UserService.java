@@ -81,7 +81,7 @@ public class UserService {
         ArrayList<Account> accountList = new ArrayList<>(accountRespository.findByUserId(id));
         for (Account account : accountList) {
             if (account.getStatus().equals(AccountStatus.SUSPENDED) || account.getStatus().equals(AccountStatus.OPEN)) {
-                throw new IllegalStateException("Customer conna be deleted while an account is still active.");
+                throw new IllegalStateException("Customer cannot be deleted while an account is still active.");
             } else {
                 account.setUser(null);
                 accountRespository.saveAndFlush(account);

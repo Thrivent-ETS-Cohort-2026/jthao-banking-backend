@@ -51,8 +51,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         try {
-            User user = userService.findById(id);
-            return ResponseEntity.ok(userService.getAllAccountsForUser(user));
+            return ResponseEntity.ok(userService.findById(id));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
@@ -68,7 +67,6 @@ public class UserController {
         }
     }
 
-    // ** TODO: add validation for account balance before deleting
     // delete customer if account balance = 0
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCustomer(@PathVariable Long id) {
@@ -85,8 +83,15 @@ public class UserController {
     }
 
     // GET | List accounts for customer
-    // ** TODO: refactor from Account to here
-
+    @GetMapping("/{id}/accounts")
+    public ResponseEntity<?> findAllAccountsForId(@PathVariable Long id) {
+        try {
+            User user = userService.findById(id);
+            return ResponseEntity.ok(userService.getAllAccountsForUser(user));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
+    }
 
 
 
