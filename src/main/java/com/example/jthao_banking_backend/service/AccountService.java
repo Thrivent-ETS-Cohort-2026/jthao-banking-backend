@@ -12,6 +12,7 @@ import com.example.jthao_banking_backend.model.User;
 import com.example.jthao_banking_backend.repository.AccountRespository;
 import com.example.jthao_banking_backend.repository.UserRepository;
 import com.example.jthao_banking_backend.types.AccountStatus;
+import com.example.jthao_banking_backend.validation.AccountValidator;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -41,8 +42,7 @@ public class AccountService {
         }
         User user = userRepository.findById(request.getUserId())
         .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + request.getUserId()));
-        return accountRespository.save(new Account(request.getAccountType(), request.getInitialDeposit(), accountNumber, user));
-
+        return accountRespository.saveAndFlush(new Account(request.getAccountType().toString(), request.getInitialDeposit(), accountNumber, user));
     }
 
     public String createAccountNumber(){
@@ -62,6 +62,19 @@ public class AccountService {
     }
 
     // Update account status
+    public Account updateStatus(String accountNumber, String status) {
+        try {
+        Account account = findByAccountNumber(accountNumber);
+        AccountStatus newStatus = AccountValidator.isValidAccountStatus(status);
+        account.setAccountStatus(newStatus);
+        return accountRespository.saveAndFlush(account);
+        }  catch (EntityNotFoundException ex) {
+            throw new EntityNotFoundException(ex.getMessage());
+        }
+        catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException(ex.getMessage());
+        }
+    }
 
     // Delete - close account
     public Account closeAccount(String accountNumber) {
@@ -76,11 +89,12 @@ public class AccountService {
         return account;
     }
 
-    // Get list of transactions for account
-
+    
     // Post deposit or withdrawal
 
     // Post transfer funds between 2 accounts
 
+
+    // Get list of transactions for account
 
 }

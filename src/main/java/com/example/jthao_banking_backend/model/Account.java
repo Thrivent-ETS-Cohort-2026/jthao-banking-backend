@@ -1,10 +1,10 @@
 package com.example.jthao_banking_backend.model;
 
 import java.math.BigDecimal;
-import java.util.concurrent.ThreadLocalRandom;
 
 import com.example.jthao_banking_backend.types.AccountStatus;
 import com.example.jthao_banking_backend.types.AccountType;
+import com.example.jthao_banking_backend.validation.AccountValidator;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,11 +29,11 @@ public class Account {
     private String accountNumber;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "account_type")
+    @Column(name = "account_type", nullable = false)
     private AccountType accountType;
 
     @Enumerated(EnumType.STRING)
-     @Column(name = "account_status")
+     @Column(name = "account_status", nullable = false)
     private AccountStatus status;
 
     @Column(name = "initial_deposit")
@@ -48,10 +48,11 @@ public class Account {
 
     protected Account() {}
 
-    public Account(AccountType accountType, BigDecimal deposit, String accountNumber, User user) {
+    public Account(String accountType, BigDecimal deposit, String accountNumber, User user) {
         // add validation here
+        AccountValidator.validateAccountCreation(accountType, deposit);
 
-        this.accountType = accountType;
+        this.accountType = AccountType.valueOf(accountType.toUpperCase());
         this.status = AccountStatus.OPEN;
         this.initialDeposit = deposit;
         this.user = user;

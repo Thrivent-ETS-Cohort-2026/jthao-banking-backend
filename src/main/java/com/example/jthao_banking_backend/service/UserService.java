@@ -33,7 +33,7 @@ public class UserService {
 
     public User createUser(String fName, String lName, 
         String email, String phoneNumber) {
-            return userRepository.save(new User(fName, lName, email, phoneNumber));
+            return userRepository.saveAndFlush(new User(fName, lName, email, phoneNumber));
         }
 
     public User findById(Long id) {

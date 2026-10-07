@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.jthao_banking_backend.dto.request.CreateAccountRequest;
+import com.example.jthao_banking_backend.dto.request.UpdateStatusRequest;
 import com.example.jthao_banking_backend.service.AccountService;
+import com.example.jthao_banking_backend.types.AccountStatus;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -40,9 +42,19 @@ public class AccountController {
     }
 
     // Update account status
+    @PatchMapping("/{accountNumber}")
+    public ResponseEntity<?> updateAccountStatus(@PathVariable String accountNumber, @RequestBody UpdateStatusRequest request) {
+        try {
+            return ResponseEntity.ok(accountService.updateStatus(accountNumber, request.getStatus()));
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        } catch (IllegalArgumentException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+        }
+    }
 
     // Delete/close account if balance = 0
-    @PatchMapping("/{accountNumber}")
+    @PatchMapping("/{accountNumber}/deactivate")
     public ResponseEntity<?> deactivateAccount(@PathVariable String accountNumber) {
         try {
             return ResponseEntity.ok(accountService.closeAccount(accountNumber));
