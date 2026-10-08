@@ -1,16 +1,16 @@
 package com.example.jthao_banking_backend.service;
 
-import java.math.BigDecimal;
 import com.example.jthao_banking_backend.validation.TransactionValidator;
 
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
 
-import com.example.jthao_banking_backend.dto.request.DepositRequest;
+import com.example.jthao_banking_backend.dto.request.TransactionRequest;
 import com.example.jthao_banking_backend.model.Account;
 import com.example.jthao_banking_backend.repository.AccountRespository;
 import com.example.jthao_banking_backend.repository.UserRepository;
+import com.example.jthao_banking_backend.types.AccountStatus;
 
 
 @Service 
@@ -26,14 +26,18 @@ public class TransactionService {
     }
 
     // Post deposit
-    public void deposit(String accountNumber, DepositRequest request) {
+    public void deposit(String accountNumber, TransactionRequest request) {
         try {
             // check if amount is valid
             TransactionValidator.validateAmount(request.getAmount());
             // find the account by account number
             Account account = accountRespository.findByAccountNumber(accountNumber).orElseThrow(() -> new EntityNotFoundException("Account not found with account number: " + accountNumber));
+            if (account.getStatus() != AccountStatus.OPEN) {
+                throw new IllegalArgumentException("Cannot deposit into an account that is not open");
+            }
             // deposit the amount into the account
             account.deposit(request.getAmount());
+            accountRespository.saveAndFlush(account);
         } catch (EntityNotFoundException ex) {
             throw new EntityNotFoundException(ex.getMessage());
         }
@@ -44,16 +48,18 @@ public class TransactionService {
     }
     
     // post withdrawal
-    public void withdraw(String accountNumber, DepositRequest request) {
+    public void withdraw(String accountNumber, TransactionRequest request) {
         try {
             // check if amount is valid
             TransactionValidator.validateAmount(request.getAmount());
             // find account by account number
             Account account = accountRespository.findByAccountNumber(accountNumber).orElseThrow(() -> new EntityNotFoundException("Account not found with account number: " + accountNumber));
+            if (account.getStatus() != AccountStatus.OPEN) {
+                throw new IllegalArgumentException("Cannot withdraw from an account that is not open");
+            }
             // deposit the amount into the account
             account.withdraw(request.getAmount());
-
-
+            accountRespository.saveAndFlush(account);
         } catch (EntityNotFoundException ex) {
             throw new EntityNotFoundException(ex.getMessage());
         }

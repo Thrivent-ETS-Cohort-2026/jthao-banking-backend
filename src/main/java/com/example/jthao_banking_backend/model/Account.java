@@ -103,9 +103,6 @@ public class Account {
 
     // deposit
     public void deposit(BigDecimal amount) {
-        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Deposit amount must be greater than zero");
-        }
         this.accountBalance = this.accountBalance.add(amount);
     }
 
