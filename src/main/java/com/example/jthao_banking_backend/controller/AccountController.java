@@ -71,6 +71,7 @@ public class AccountController {
 
     // Get account by accountNumber
     @GetMapping("/{accountNumber}")
+    @Operation(summary = "Get account by account number", description = "Retrieves the details of an account using its account number.")
     public ResponseEntity<?> getAccountByAccountNumber(@PathVariable String accountNumber) {
         try {
             return ResponseEntity.ok(accountService.findByAccountNumber(accountNumber));

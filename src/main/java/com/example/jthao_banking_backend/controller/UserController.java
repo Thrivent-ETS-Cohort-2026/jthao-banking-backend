@@ -17,6 +17,7 @@ import com.example.jthao_banking_backend.dto.request.UpdateUserRequest;
 import com.example.jthao_banking_backend.model.User;
 import com.example.jthao_banking_backend.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,6 +39,7 @@ public class UserController {
 
     // create
     @PostMapping("/")
+    @Operation(summary = "Create a new user", description = "Creates a new user with the provided first name, last name, email, and phone number.")
     public ResponseEntity<?> createUser(String fName, String lName, String email, String phoneNumber) {
         try {
         return ResponseEntity.ok(userService.createUser(fName, lName, email, phoneNumber));
@@ -48,6 +50,7 @@ public class UserController {
 
     // find by id
     @GetMapping("/{id}")
+    @Operation(summary = "Get user by ID", description = "Retrieves the details of a user using their ID.")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(userService.findById(id));
@@ -58,6 +61,7 @@ public class UserController {
 
     // update contact info
     @PatchMapping("/{id}")
+    @Operation(summary = "Update user contact information", description = "Updates the contact information of an existing user identified by their ID.")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody  UpdateUserRequest request) {
         try {
             return ResponseEntity.ok(userService.updateUserDetails(id, request));
@@ -68,6 +72,7 @@ public class UserController {
 
     // delete customer if account balance = 0
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a user", description = "Deletes an existing user identified by their ID if the account balance is zero.")
     public ResponseEntity<?> deleteCustomer(@PathVariable Long id) {
         try {
             userService.deleteCustomerDetails(id);
@@ -83,6 +88,7 @@ public class UserController {
 
     // GET | List accounts for customer
     @GetMapping("/{id}/accounts")
+    @Operation(summary = "List all accounts for a user", description = "Retrieves all accounts associated with the user identified by their ID.")
     public ResponseEntity<?> findAllAccountsForId(@PathVariable Long id) {
         try {
             User user = userService.findById(id);
