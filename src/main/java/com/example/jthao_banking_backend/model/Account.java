@@ -86,7 +86,7 @@ public class Account {
     }
 
     public BigDecimal getAccountBalance() {
-        return this.accountBalance = accountBalance;
+        return this.accountBalance;
     }
 
     public void setAccountNumber(String newAccountNum) {

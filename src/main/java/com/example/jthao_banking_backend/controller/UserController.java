@@ -20,7 +20,6 @@ import com.example.jthao_banking_backend.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.web.bind.annotation.RequestBody;
-// import jakarta.persistence.EntityNotFoundException;
 
 @RestController 
 @RequestMapping("/customers")
