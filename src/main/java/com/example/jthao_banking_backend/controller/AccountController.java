@@ -16,6 +16,7 @@ import com.example.jthao_banking_backend.dto.request.UpdateStatusRequest;
 import com.example.jthao_banking_backend.service.AccountService;
 import com.example.jthao_banking_backend.types.AccountStatus;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.EntityNotFoundException;
 
 @RestController 
@@ -30,6 +31,7 @@ public class AccountController {
 
     // Create account
     @PostMapping("/")
+    @Operation(summary = "Create a new account", description = "Creates a new account for a user. The default is a CHECKING account. Another option is a SAVINGS account. The account type must be specified in the request along with the customer's first name, last name, email, and phone number.")
     public ResponseEntity<?> createAccount(@RequestBody CreateAccountRequest request){
         try {
             return ResponseEntity.ok(accountService.createAccount(request));
@@ -43,6 +45,7 @@ public class AccountController {
 
     // Update account status
     @PatchMapping("/{accountNumber}")
+    @Operation(summary = "Update account status", description = "Updates the status of an existing account.")
     public ResponseEntity<?> updateAccountStatus(@PathVariable String accountNumber, @RequestBody UpdateStatusRequest request) {
         try {
             return ResponseEntity.ok(accountService.updateStatus(accountNumber, request.getStatus()));
@@ -55,6 +58,7 @@ public class AccountController {
 
     // Delete/close account if balance = 0
     @PatchMapping("/{accountNumber}/deactivate")
+    @Operation(summary = "Deactivate an account", description = "Deactivates an existing account if the balance is zero. by changing the account's status to CLOSED.")
     public ResponseEntity<?> deactivateAccount(@PathVariable String accountNumber) {
         try {
             return ResponseEntity.ok(accountService.closeAccount(accountNumber));
