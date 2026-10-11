@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.jthao_banking_backend.dto.request.LoginRequest;
+import com.example.jthao_banking_backend.dto.request.CreateUserRequest;
 import com.example.jthao_banking_backend.dto.request.UpdateUserRequest;
 import com.example.jthao_banking_backend.model.Account;
 import com.example.jthao_banking_backend.model.User;
@@ -30,9 +32,14 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User createUser(String fName, String lName, 
-        String email, String phoneNumber) {
-            return userRepository.saveAndFlush(new User(fName, lName, email, phoneNumber));
+    public User createUser(CreateUserRequest request) {
+            return userRepository.saveAndFlush(new User(
+                request.getFirstName(),
+                request.getLastName(),
+                request.getEmail(),
+                request.getPhoneNumber(),
+                request.getPassword()
+            ));
         }
 
     public User findById(Long id) {
@@ -88,6 +95,12 @@ public class UserService {
         }
 
         userRepository.deleteById(id);
+    }
+
+    public User checkCredentials(LoginRequest request) {
+        User user = userRepository.findByEmailAndPassword(request.getEmail(), request.getPassword())
+            .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + request.getEmail() + ", and password."));
+        return user;
     }
 
 

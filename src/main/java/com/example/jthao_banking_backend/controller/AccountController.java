@@ -1,5 +1,5 @@
 package com.example.jthao_banking_backend.controller;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +19,7 @@ import com.example.jthao_banking_backend.types.AccountStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.EntityNotFoundException;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController 
 @RequestMapping("/accounts")
 public class AccountController {

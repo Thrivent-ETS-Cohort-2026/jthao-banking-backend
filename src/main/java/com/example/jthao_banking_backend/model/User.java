@@ -24,22 +24,27 @@ public class User {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
+    @Column(name = "password", nullable = false)
+    private String password;
+
 
     protected User() {}
 
-    public User(String fName, String lName, String eMail, String phoneNumber) {
-        UserValidator.validateUser(fName, lName, eMail, phoneNumber);
+    public User(String fName, String lName, String eMail, String phoneNumber, String password) {
+        UserValidator.validateUser(fName, lName, eMail, phoneNumber, password);
 
         this.firstName = fName;
         this.lastName = lName;
         this.email = eMail;
         this.phoneNumber = phoneNumber;
+        this.password = password;
+        this.password = password;
     }
 
     public Long getId() {
@@ -62,6 +67,10 @@ public class User {
         return phoneNumber;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public void setFirstName(String fName) {
         UserValidator.validateFirstName(fName);
         this.firstName = fName;
@@ -80,6 +89,11 @@ public class User {
     public void setPhoneNumber(String phoneNum) {
         UserValidator.validatePhoneNumber(phoneNum);
         this.phoneNumber = phoneNum;
+    }
+
+    public void setPassword(String password) {
+        UserValidator.validatePassword(password);
+        this.password = password;
     }
 
 

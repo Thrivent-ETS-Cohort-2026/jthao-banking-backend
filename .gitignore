@@ -37,6 +37,5 @@ build/
 .env.*
 !.env.example
 
-### PostgreSQL / Docker ###
-postgres-data/
 
+.DS_Store

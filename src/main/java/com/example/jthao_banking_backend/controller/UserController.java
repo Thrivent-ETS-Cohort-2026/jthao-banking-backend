@@ -1,18 +1,19 @@
 package com.example.jthao_banking_backend.controller;
-
-
-import java.util.List;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.jthao_banking_backend.dto.request.LoginRequest;
+import com.example.jthao_banking_backend.dto.request.CreateUserRequest;
 import com.example.jthao_banking_backend.dto.request.UpdateUserRequest;
 import com.example.jthao_banking_backend.model.User;
 import com.example.jthao_banking_backend.service.UserService;
@@ -20,8 +21,8 @@ import com.example.jthao_banking_backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.EntityNotFoundException;
 
-import org.springframework.web.bind.annotation.RequestBody;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController 
 @RequestMapping("/customers")
 public class UserController {
@@ -40,9 +41,9 @@ public class UserController {
     // create
     @PostMapping("/")
     @Operation(summary = "Create a new user", description = "Creates a new user with the provided first name, last name, email, and phone number.")
-    public ResponseEntity<?> createUser(String fName, String lName, String email, String phoneNumber) {
+    public ResponseEntity<?> createUser(@RequestBody CreateUserRequest request) {
         try {
-        return ResponseEntity.ok(userService.createUser(fName, lName, email, phoneNumber));
+        return ResponseEntity.ok(userService.createUser(request));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
@@ -98,6 +99,14 @@ public class UserController {
         }
     }
 
-
+    @PostMapping("/login")
+    @Operation(summary = "Check if the credentials are valid, then returns the user details", description = "Checks if the credentials coming in are valid. If they are, returns the user details based on their email address and password.")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        try {
+            return ResponseEntity.ok(userService.checkCredentials(request));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
+    }
 
 }

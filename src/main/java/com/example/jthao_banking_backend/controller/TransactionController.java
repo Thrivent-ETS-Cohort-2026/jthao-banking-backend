@@ -1,4 +1,5 @@
 package com.example.jthao_banking_backend.controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +12,7 @@ import com.example.jthao_banking_backend.service.TransactionService;
 
 import io.swagger.v3.oas.annotations.Operation;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController 
 @RequestMapping("/transactions")
 public class TransactionController {

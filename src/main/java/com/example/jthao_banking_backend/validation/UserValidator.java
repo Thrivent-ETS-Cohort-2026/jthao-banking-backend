@@ -3,11 +3,12 @@ package com.example.jthao_banking_backend.validation;
 public class UserValidator {
     
 
-    public static void validateUser(String fName, String lName, String eMail, String phoneNumber) {
+    public static void validateUser(String fName, String lName, String eMail, String phoneNumber, String password) {
         validateFirstName(fName);
         validateLastName(lName);
         validateEmail(eMail);
         validatePhoneNumber(phoneNumber);
+        validatePassword(password);
     }
 
     public static void validateFirstName(String firstName) {
@@ -42,5 +43,14 @@ public class UserValidator {
         }
     }
 
+
+    public static void validatePassword(String password) {
+        if (password.isBlank() || password == null) {
+            throw new IllegalArgumentException("Password cannot be null or empty");
+        }
+        if (password.length() < 8) {
+            throw new IllegalArgumentException("Password must be at least 8 characters long");
+        }
+    }
 
 }
