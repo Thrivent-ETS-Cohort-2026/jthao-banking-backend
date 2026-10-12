@@ -10,6 +10,7 @@ import com.example.jthao_banking_backend.dto.request.CreateUserRequest;
 import com.example.jthao_banking_backend.dto.request.UpdateUserRequest;
 import com.example.jthao_banking_backend.model.Account;
 import com.example.jthao_banking_backend.model.User;
+import com.example.jthao_banking_backend.dto.response.LoginResponse;
 import com.example.jthao_banking_backend.dto.response.UserIdResponse;
 import com.example.jthao_banking_backend.repository.AccountRespository;
 import com.example.jthao_banking_backend.repository.UserRepository;
@@ -97,10 +98,15 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public User checkCredentials(LoginRequest request) {
+    public LoginResponse checkCredentials(LoginRequest request) {
         User user = userRepository.findByEmailAndPassword(request.getEmail(), request.getPassword())
             .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + request.getEmail() + ", and password."));
-        return user;
+        return new LoginResponse(
+            user.getId(),
+            user.getFirstName(),
+            user.getLastName(),
+            user.getEmail()
+        );
     }
 
 
